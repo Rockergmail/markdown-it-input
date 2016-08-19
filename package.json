@@ -1,0 +1,19 @@
+{
+  "name": "e-online",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "markdown-it-container": "^2.0.0",
+    "markdown-it-ins": "^2.0.0",
+    "remarkable": "^1.6.2"
+  },
+  "dependencies": {
+    "markdown-it": "^7.0.0"
+  }
+}

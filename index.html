@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>e-online</title>
+	<link rel="stylesheet" href="./markdown7.css">
+<script src="./node_modules/requirejs/require.js"></script>	
+<script src="//cdn.hongbaorili.com/wind/static/lib/zepto.js"></script>
+</head>
+<body>
+	<!-- <form>
+		<label><input type="checkbox" name="test" value="a">A</label>
+		<label><input type="checkbox" name="test" value="b">B</label>
+	
+		<input type="radio" name="tf" value="t" checked="checked">
+		<input type="radio" name="tf" value="f">
+	</form>
+	<button id="test">拿数据</button> -->
+	<div id="timu"></div>
+
+	<!-- <textarea>jsut a text</textarea> -->
+<script>
+	requirejs(['./node_modules/markdown-it/dist/markdown-it', './node_modules/markdown-it-ins/dist/markdown-it-ins', './markdown-it-input'], function(MarkdownIt, mic, mii){
+		var serverMD;
+		var md = new MarkdownIt({
+			html: true,
+			linkify: true
+		})
+		  .use(mii);
+		  // .use(mic);
+		$.get('./test.md', function(data){
+			serverMD = data;
+			$("#timu").html(md.render(serverMD))
+			// console.log(JSON.stringify(md.parse(serverMD, { references: {} }), null, 2))
+		});
+	})
+
+	$("#test").click(function(){
+		console.log($("form").serializeArray())
+		console.log($("form").serialize())
+	})
+</script>
+</body>
+</html>
