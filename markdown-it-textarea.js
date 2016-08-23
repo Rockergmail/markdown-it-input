@@ -1,7 +1,7 @@
 /*! markdown-it-ins 2.0.0 https://github.com//markdown-it/markdown-it-ins @license MIT */(function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.markdownitIns = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
-module.exports = function input_plugin(md) {
+module.exports = function textarea_plugin(md) {
   var ch, token, content, pos;
 
   function tokenize(state, silent) {
@@ -11,7 +11,7 @@ module.exports = function input_plugin(md) {
 
       if (silent) { return false; }
 
-      if (marker !== 0x21/* ! */) { return false; }
+      if (marker !== 0x40/* @ */) { return false; }
 
       scanned = state.scanDelims(state.pos, true);
       // len = scanned.length;
@@ -42,7 +42,6 @@ module.exports = function input_plugin(md) {
       }
 
       state.pos += scanned.length;
-
       return true;
   }
   
@@ -58,7 +57,7 @@ module.exports = function input_plugin(md) {
     for (i = 0; i < max; i++) {
       startDelim = delimiters[i];
 
-      if (startDelim.marker !== 0x21/* ! */) {
+      if (startDelim.marker !== 0x40/* @ */) {
         continue;
       }
 
@@ -69,22 +68,22 @@ module.exports = function input_plugin(md) {
       endDelim = delimiters[startDelim.end];
 
       token         = state.tokens[startDelim.token];
-      token.type    = 'input_open';
-      token.tag     = 'label><input';
-      token.attrs   = [ ['type', 'radio'], ['name', 'sft'+window.GLOBAL.nameAddtor]];
+      token.type    = 'textarea_open';
+      token.attrs   = [ ['placeholder', '在这里输入答案']];
+      token.tag     = 'textarea';
       token.nesting = 1;
-      token.markup  = '!!';
+      token.markup  = '@@';
       token.content = '';
 
       token         = state.tokens[endDelim.token];
-      token.type    = 'input_close';
-      token.tag     = 'input></label';
+      token.type    = 'textarea_close';
+      token.tag     = 'textarea';
       token.nesting = -1;
-      token.markup  = '!!';
+      token.markup  = '@@';
       token.content = '';
 
       if (state.tokens[endDelim.token - 1].type === 'text' &&
-          state.tokens[endDelim.token - 1].content === '!') {
+          state.tokens[endDelim.token - 1].content === '@') {
 
         loneMarkers.push(endDelim.token - 1);
       }
@@ -100,7 +99,7 @@ module.exports = function input_plugin(md) {
       i = loneMarkers.pop();
       j = i + 1;
 
-      while (j < state.tokens.length && state.tokens[j].type === 'input_close') {
+      while (j < state.tokens.length && state.tokens[j].type === 'textarea_close') {
         j++;
       }
 
@@ -114,8 +113,8 @@ module.exports = function input_plugin(md) {
     }
   }
 
-  md.inline.ruler.before('emphasis', 'input', tokenize);
-  md.inline.ruler2.before('emphasis', 'input', postProcess);
+  md.inline.ruler.before('emphasis', 'textarea', tokenize);
+  md.inline.ruler2.before('emphasis', 'textarea', postProcess);
 
 };
 
